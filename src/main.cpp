@@ -3,10 +3,9 @@
 #include <Keypad.h>
 #include <Adafruit_PWMServoDriver.h>
 
-
-#define SERVOMIN 150                // This is the 'minimum' pulse length count (out of 4096)
-#define SERVOMAX 550                // This is the 'maximum' pulse length count (out of 4096)
-#define SERVO_FREQ 50               // Analog servos run at ~50 Hz updates
+#define SERVOMIN 150  // This is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX 550  // This is the 'maximum' pulse length count (out of 4096)
+#define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
 
 const byte ROWS = 3; //number of rows
 const byte COLS = 3; //number of columns
@@ -23,12 +22,16 @@ Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS); //initia
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);                                    //Create LCD screen object
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-char capturedLetter = '0';
+char capturedLetter = '0'; //Variable for converting signal from keypad to letter
+
+int brailleLetter[] = {0, 0, 0, 0, 0, 0}; //Braille representation of captured letter
 
 int captureLetter();
 void updateScreen();
 int degreesToPulse(int degrees);               //convert degrees to pulse
 void writePosition(int channel, int position); //control servo position
+void letterToBraille(char letter);
+void physicalRepresentation(int letterData[]);
 
 void setup()
 {
@@ -43,15 +46,28 @@ void setup()
   lcd.print("Hello");  //Show text
   lcd.setCursor(0, 1); //Set cursor
   lcd.print("World!"); //Show text
+
+  Serial.println("Ready");
 }
 
 void loop()
 {
-  writePosition(0, 30); //Simple test of the circuit
+  writePosition(0, 0); //Simple test of the circuit
+  writePosition(1, 0);
 
   if (captureLetter() == 1)
   {
     updateScreen();
+    letterToBraille(capturedLetter);
+    physicalRepresentation(brailleLetter);
+
+    Serial.print(brailleLetter[0]);
+    Serial.print(brailleLetter[1]);
+    Serial.print(brailleLetter[2]);
+    Serial.print(brailleLetter[3]);
+    Serial.print(brailleLetter[4]);
+    Serial.println(brailleLetter[5]);
+    delay(1000);
   }
 }
 
@@ -122,4 +138,40 @@ int degreesToPulse(int degrees)
 void writePosition(int channel, int newPosition)
 {
   pwm.setPWM(channel, 0, degreesToPulse(newPosition));
+}
+
+void letterToBraille(char letter)
+{
+  switch (letter)
+  {
+  case 'A':
+    brailleLetter[0] = 1;
+    brailleLetter[1] = 0;
+    brailleLetter[2] = 0;
+    brailleLetter[3] = 0;
+    brailleLetter[4] = 0;
+    brailleLetter[5] = 0;
+    break;
+  default:
+    brailleLetter[0] = 0;
+    brailleLetter[1] = 0;
+    brailleLetter[2] = 0;
+    brailleLetter[3] = 0;
+    brailleLetter[4] = 0;
+    brailleLetter[5] = 0;
+    break;
+  }
+}
+
+void physicalRepresentation(int letterData[])
+{
+  for (int i = 0; i < 6; i++)
+  {
+    if (letterData[i] == 1)
+    {
+      writePosition(i, 30);
+    }
+    else
+      writePosition(i, 0);
+  }
 }
