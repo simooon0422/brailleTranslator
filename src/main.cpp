@@ -25,6 +25,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 char capturedLetter = '0'; //Variable for converting signal from keypad to letter
 
 int brailleLetter[] = {0, 0, 0, 0, 0, 0}; //Braille representation of captured letter
+int servPositions[] = {0, 0, 0, 0, 0, 0};
 
 int captureLetter();
 void updateScreen();
@@ -32,6 +33,8 @@ int degreesToPulse(int degrees);               //convert degrees to pulse
 void writePosition(int channel, int position); //control servo position
 void letterToBraille(char letter);
 void physicalRepresentation(int letterData[]);
+void convert(int a, int b, int c, int d, int e, int f);
+void updateServos();
 
 void setup()
 {
@@ -52,8 +55,8 @@ void setup()
 
 void loop()
 {
-  writePosition(0, 0); //Simple test of the circuit
-  writePosition(1, 0);
+  // writePosition(0, 0); //Simple test of the circuit
+  // writePosition(1, 0);
 
   if (captureLetter() == 1)
   {
@@ -61,14 +64,16 @@ void loop()
     letterToBraille(capturedLetter);
     physicalRepresentation(brailleLetter);
 
-    Serial.print(brailleLetter[0]);
-    Serial.print(brailleLetter[1]);
-    Serial.print(brailleLetter[2]);
-    Serial.print(brailleLetter[3]);
-    Serial.print(brailleLetter[4]);
-    Serial.println(brailleLetter[5]);
-    delay(1000);
+    // Serial.print(brailleLetter[0]);
+    // Serial.print(brailleLetter[1]);
+    // Serial.print(brailleLetter[2]);
+    // Serial.print(brailleLetter[3]);
+    // Serial.print(brailleLetter[4]);
+    // Serial.println(brailleLetter[5]);
+    // delay(1000);
   }
+  updateServos();
+  delay(1);
 }
 
 int captureLetter()
@@ -145,20 +150,10 @@ void letterToBraille(char letter)
   switch (letter)
   {
   case 'A':
-    brailleLetter[0] = 1;
-    brailleLetter[1] = 0;
-    brailleLetter[2] = 0;
-    brailleLetter[3] = 0;
-    brailleLetter[4] = 0;
-    brailleLetter[5] = 0;
+    convert(1, 0, 0, 0, 0, 0);
     break;
   default:
-    brailleLetter[0] = 0;
-    brailleLetter[1] = 0;
-    brailleLetter[2] = 0;
-    brailleLetter[3] = 0;
-    brailleLetter[4] = 0;
-    brailleLetter[5] = 0;
+    convert(0, 0, 0, 0, 0, 0);
     break;
   }
 }
@@ -169,9 +164,27 @@ void physicalRepresentation(int letterData[])
   {
     if (letterData[i] == 1)
     {
-      writePosition(i, 30);
+      servPositions[i] = 30;
     }
     else
-      writePosition(i, 0);
+      servPositions[i] = 0;
   }
+}
+
+void updateServos(){
+  for (int i = 0; i < 6; i++)
+  {
+    writePosition(i, servPositions[i]);
+  }
+  
+}
+
+void convert(int a, int b, int c, int d, int e, int f)
+{
+  brailleLetter[0] = a;
+  brailleLetter[1] = b;
+  brailleLetter[2] = c;
+  brailleLetter[3] = d;
+  brailleLetter[4] = e;
+  brailleLetter[5] = f;
 }
