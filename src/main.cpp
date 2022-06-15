@@ -1,65 +1,85 @@
 #include <Arduino.h>
 #include <Adafruit_PWMServoDriver.h> //Servo driver library
-#include <SoftwareSerial.h> //Serial communiction library
+#include <SoftwareSerial.h>          //Serial communiction library
 
 #define SERVOMIN 150  // This is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX 550  // This is the 'maximum' pulse length count (out of 4096)
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();                //Create pwm object
-SoftwareSerial hc06(2,3);
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(); // Create pwm object
+SoftwareSerial hc06(2, 3);
 
 String message = "";
 
-int brailleDots[] = {0, 0, 0, 0, 0, 0}; //Braille representation of captured letter
-int servPositions[] = {0, 0, 0, 0, 0, 0}; //Stores servos' desired positions
+int brailleDots[] = {0, 0, 0, 0, 0, 0};   // Braille representation of captured letter
+int servPositions[] = {0, 0, 0, 0, 0, 0}; // Stores servos' desired positions
 
 // int captureLetter();                                    //Stores letter for conversion to Braille
-void updateScreen();                                    //Updates LCD screen to show current letter
-int degreesToPulse(int degrees);                        //convert degrees to pulse
-void writePosition(int channel, int position);          //control servo position
-void letterToBraille(char letter);                      //Converting chosen letter to its Braille version
+void updateScreen();                                    // Updates LCD screen to show current letter
+int degreesToPulse(int degrees);                        // convert degrees to pulse
+void writePosition(int channel, int position);          // control servo position
+void letterToBraille(char letter);                      // Converting chosen letter to its Braille version
 void convert(int a, int b, int c, int d, int e, int f); //
-void physicalRepresentation(int letterData[]);          //Fills array with servos' desired positions
-void updateServos();                                    //Updates servos' positions
+void physicalRepresentation(int letterData[]);          // Fills array with servos' desired positions
+void updateServos();                                    // Updates servos' positions
 
 void setup()
 {
   Serial.begin(9600);
 
   Serial.println("ENTER AT Commands:");
-  //Initialize Bluetooth Serial Port
+  // Initialize Bluetooth Serial Port
   hc06.begin(9600);
 
-  pwm.begin();                //Initialize pwm
+  pwm.begin();                // Initialize pwm
   pwm.setPWMFreq(SERVO_FREQ); // Analog servos run at ~50 Hz updates
   delay(10);
-
+  writePosition(0, 90);
 }
 
 void loop()
 {
-  //Write data from HC06 to Serial Monitor
-  if (hc06.available()) {
-    //Serial.write(hc06.read());
+  // Write data from HC06 to Serial Monitor
+  if (hc06.available())
+  {
+    // Serial.write(hc06.read());
     message = hc06.readString();
     Serial.println(message);
-    }
-
-  //Write from Serial Monitor to HC06
-  if (Serial.available()) {
-    hc06.write(Serial.read());
-  }
-  
-  if (message == "hello") {
-     Serial.println("It works!");
-     message = "";
   }
 
-  //Write from Serial Monitor to HC06
-  // if (Serial.available()) {
-  //   hc06.write(Serial.read());
-  // }
+  if (message == "90")
+  {
+    writePosition(0, 90);
+  }
+  else if(message == "5"){
+    writePosition(0, 95);
+  }
+  else if(message == "10"){
+    writePosition(0, 100);
+  }
+  else if(message == "15"){
+    writePosition(0, 105);
+  }
+  else if(message == "20"){
+    writePosition(0, 110);
+  }
+  else if(message == "25"){
+    writePosition(0, 115);
+  }
+  else if(message == "30"){
+    writePosition(0, 120);
+  }
+  else if(message == "60"){
+    writePosition(0, 150);
+  }
+  else if(message == "0"){
+    writePosition(0, 0);
+  }
+
+  // Write from Serial Monitor to HC06
+  //  if (Serial.available()) {
+  //    hc06.write(Serial.read());
+  //  }
 
   // if (captureLetter() == 1)
   // {
@@ -160,6 +180,57 @@ void letterToBraille(char letter)
     convert(1, 1, 0, 0, 1, 0);
     break;
   case 'I':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'J':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'K':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'L':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'M':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'N':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'O':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'P':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'Q':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'R':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'S':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'T':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'U':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'V':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'W':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'X':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'Y':
+    convert(0, 1, 0, 1, 0, 0);
+    break;
+  case 'Z':
     convert(0, 1, 0, 1, 0, 0);
     break;
   default:
