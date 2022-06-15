@@ -11,6 +11,8 @@ SoftwareSerial hc06(2, 3);
 
 String message = "";
 
+int messageLength = 0;
+
 int brailleDots[] = {0, 0, 0, 0, 0, 0};   // Braille representation of captured letter
 int servPositions[] = {0, 0, 0, 0, 0, 0}; // Stores servos' desired positions
 
@@ -44,37 +46,56 @@ void loop()
   {
     // Serial.write(hc06.read());
     message = hc06.readString();
+    message = message + ".";
     Serial.println(message);
+
+    // Convert String message to Char array for letterToBraille function
+    messageLength = message.length();
+    Serial.println(messageLength);
+    char messageBuf[messageLength];
+    message.toCharArray(messageBuf, messageLength);
+
+    letterToBraille(messageBuf[0]);
+    Serial.println(brailleDots[0]);
+    Serial.println(brailleDots[1]);
+    Serial.println(brailleDots[2]);
+    Serial.println(brailleDots[3]);
+    Serial.println(brailleDots[4]);
+    Serial.println(brailleDots[5]);
+    // Serial.println(messageBuf[0]);
+    // Serial.println(messageBuf[10]);
+    // delay(100);
+    
   }
 
-  if (message == "90")
-  {
-    writePosition(0, 90);
-  }
-  else if(message == "5"){
-    writePosition(0, 95);
-  }
-  else if(message == "10"){
-    writePosition(0, 100);
-  }
-  else if(message == "15"){
-    writePosition(0, 105);
-  }
-  else if(message == "20"){
-    writePosition(0, 110);
-  }
-  else if(message == "25"){
-    writePosition(0, 115);
-  }
-  else if(message == "30"){
-    writePosition(0, 120);
-  }
-  else if(message == "60"){
-    writePosition(0, 150);
-  }
-  else if(message == "0"){
-    writePosition(0, 0);
-  }
+  // if (message == "90")
+  // {
+  //   writePosition(0, 90);
+  // }
+  // else if(message == "5"){
+  //   writePosition(0, 95);
+  // }
+  // else if(message == "10"){
+  //   writePosition(0, 100);
+  // }
+  // else if(message == "15"){
+  //   writePosition(0, 105);
+  // }
+  // else if(message == "20"){
+  //   writePosition(0, 110);
+  // }
+  // else if(message == "25"){
+  //   writePosition(0, 115);
+  // }
+  // else if(message == "30"){
+  //   writePosition(0, 120);
+  // }
+  // else if(message == "60"){
+  //   writePosition(0, 150);
+  // }
+  // else if(message == "0"){
+  //   writePosition(0, 0);
+  // }
 
   // Write from Serial Monitor to HC06
   //  if (Serial.available()) {
@@ -155,83 +176,109 @@ void letterToBraille(char letter)
 {
   switch (letter)
   {
+  case 'a':
   case 'A':
     convert(1, 0, 0, 0, 0, 0);
     break;
+  case 'b':
   case 'B':
     convert(1, 1, 0, 0, 0, 0);
     break;
+  case 'c':
   case 'C':
     convert(1, 0, 0, 1, 0, 0);
     break;
+  case 'd':
   case 'D':
     convert(1, 0, 0, 1, 1, 0);
     break;
+  case 'e':
   case 'E':
     convert(1, 0, 0, 0, 1, 0);
     break;
+  case 'f':
   case 'F':
     convert(1, 1, 0, 1, 0, 0);
     break;
+  case 'g':
   case 'G':
     convert(1, 1, 0, 1, 1, 0);
     break;
+  case 'h':
   case 'H':
     convert(1, 1, 0, 0, 1, 0);
     break;
+  case 'i':
   case 'I':
     convert(0, 1, 0, 1, 0, 0);
     break;
+  case 'j':
   case 'J':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(0, 1, 0, 1, 1, 0);
     break;
+  case 'k':
   case 'K':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 0, 0, 0);
     break;
+  case 'l':
   case 'L':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 1, 1, 0, 0, 0);
     break;
+  case 'm':
   case 'M':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 1, 0, 0);
     break;
+  case 'n':
   case 'N':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 1, 1, 0);
     break;
+  case 'o':
   case 'O':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 0, 1, 0);
     break;
+  case 'p':
   case 'P':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 1, 1, 1, 0, 0);
     break;
+  case 'q':
   case 'Q':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 1, 1, 1, 1, 0);
     break;
+  case 'r':
   case 'R':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 1, 1, 0, 1, 0);
     break;
+  case 's':
   case 'S':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(0, 1, 1, 1, 0, 0);
     break;
+  case 't':
   case 'T':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(0, 1, 1, 1, 1, 0);
     break;
+  case 'u':
   case 'U':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 0, 0, 1);
     break;
+  case 'v':
   case 'V':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 1, 1, 0, 0, 1);
     break;
+  case 'w':
   case 'W':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(0, 1, 0, 1, 1, 1);
     break;
+  case 'x':
   case 'X':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 1, 0, 1);
     break;
+  case 'y':
   case 'Y':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 1, 1, 1);
     break;
+  case 'z':
   case 'Z':
-    convert(0, 1, 0, 1, 0, 0);
+    convert(1, 0, 1, 0, 1, 1);
     break;
   default:
     convert(0, 0, 0, 0, 0, 0);
