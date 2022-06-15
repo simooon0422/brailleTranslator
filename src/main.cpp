@@ -14,7 +14,7 @@ String message = "";
 int messageLength = 0;
 
 int brailleDots[] = {0, 0, 0, 0, 0, 0};   // Braille representation of captured letter
-int servPositions[] = {0, 0, 0, 0, 0, 0}; // Stores servos' desired positions
+int servPositions[] = {90, 90, 90, 90, 90, 90}; // Stores servos' desired positions
 
 // int captureLetter();                                    //Stores letter for conversion to Braille
 void updateScreen();                                    // Updates LCD screen to show current letter
@@ -36,7 +36,8 @@ void setup()
   pwm.begin();                // Initialize pwm
   pwm.setPWMFreq(SERVO_FREQ); // Analog servos run at ~50 Hz updates
   delay(10);
-  writePosition(0, 90);
+  updateServos();
+  // writePosition(0, 90);
 }
 
 void loop()
@@ -56,17 +57,21 @@ void loop()
     message.toCharArray(messageBuf, messageLength);
 
     letterToBraille(messageBuf[0]);
-    Serial.println(brailleDots[0]);
-    Serial.println(brailleDots[1]);
-    Serial.println(brailleDots[2]);
-    Serial.println(brailleDots[3]);
-    Serial.println(brailleDots[4]);
-    Serial.println(brailleDots[5]);
+    physicalRepresentation(brailleDots);
+    // Serial.println(brailleDots[0]);
+    // Serial.println(brailleDots[1]);
+    // Serial.println(brailleDots[2]);
+    // Serial.println(brailleDots[3]);
+    // Serial.println(brailleDots[4]);
+    // Serial.println(brailleDots[5]);
     // Serial.println(messageBuf[0]);
     // Serial.println(messageBuf[10]);
     // delay(100);
     
   }
+  
+  updateServos();
+  delay(1);
 
   // if (message == "90")
   // {
@@ -292,10 +297,10 @@ void physicalRepresentation(int letterData[])
   {
     if (letterData[i] == 1)
     {
-      servPositions[i] = 90;
+      servPositions[i] = 60;
     }
     else
-      servPositions[i] = 0;
+      servPositions[i] = 90;
   }
 }
 
