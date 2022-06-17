@@ -13,8 +13,10 @@ String message = "";
 
 int messageLength = 0;
 
-int brailleDots[] = {0, 0, 0, 0, 0, 0};   // Braille representation of captured letter
-int servPositions[] = {90, 90, 90, 90, 90, 90}; // Stores servos' desired positions
+int brailleDots[] = {0, 0, 0, 0, 0, 0};                // Braille representation of captured letter
+int servPositions[] = {90, 90, 90, 90, 90, 90};        // Stores servos' desired positions
+int servInitPositions[] = {90, 90, 90, 90, 90, 90};    // Stores servos' initial positions
+int servMovePositions[] = {105, 105, 105, 75, 75, 75}; // Stores max positions that servos will move to
 
 // int captureLetter();                                    //Stores letter for conversion to Braille
 void updateScreen();                                    // Updates LCD screen to show current letter
@@ -67,9 +69,8 @@ void loop()
     // Serial.println(messageBuf[0]);
     // Serial.println(messageBuf[10]);
     // delay(100);
-    
   }
-  
+
   updateServos();
   delay(1);
 
@@ -285,22 +286,64 @@ void letterToBraille(char letter)
   case 'Z':
     convert(1, 0, 1, 0, 1, 1);
     break;
+
+  //Special characters
+  case '!': //Ą
+    convert(1, 0, 0, 0, 0, 1);
+    break;
+  case '@': //Ć
+    convert(1, 0, 0, 1, 0, 1);
+    break;
+  case '#': //Ę
+    convert(1, 0, 0, 0, 1, 1);
+    break;
+  case '$': //Ł
+    convert(1, 1, 0, 0, 0, 1);
+    break;
+  case '%': //Ń
+    convert(1, 0, 0, 1, 1, 1);
+    break;
+  case '^': //Ś
+    convert(0, 1, 0, 1, 0, 1);
+    break;
+  case '&': //Ó
+    convert(0, 0, 1, 1, 0, 1);
+    break;
+  case '*': //Ż
+    convert(1, 1, 1, 1, 0, 1);
+    break;
+  case '(': //Ź
+    convert(0, 1, 1, 1, 0, 1);
+    break;
+
   default:
     convert(0, 0, 0, 0, 0, 0);
     break;
   }
 }
 
+// void physicalRepresentation(int letterData[])
+// {
+//   for (int i = 0; i < 6; i++)
+//   {
+//     if (letterData[i] == 1)
+//     {
+//       servPositions[i] = 60;
+//     }
+//     else
+//       servPositions[i] = 90;
+//   }
+// }
 void physicalRepresentation(int letterData[])
 {
   for (int i = 0; i < 6; i++)
   {
     if (letterData[i] == 1)
     {
-      servPositions[i] = 60;
+      servPositions[i] = servMovePositions[i];
     }
     else
-      servPositions[i] = 90;
+      servPositions[i] = servInitPositions[i];
   }
 }
 
