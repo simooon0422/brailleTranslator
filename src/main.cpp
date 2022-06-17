@@ -184,42 +184,52 @@ void letterToBraille(char letter)
   {
   case 'a':
   case 'A':
+  case '1':
     convert(1, 0, 0, 0, 0, 0);
     break;
   case 'b':
   case 'B':
+  case '2':
     convert(1, 1, 0, 0, 0, 0);
     break;
   case 'c':
   case 'C':
+  case '3':
     convert(1, 0, 0, 1, 0, 0);
     break;
   case 'd':
   case 'D':
+  case '4':
     convert(1, 0, 0, 1, 1, 0);
     break;
   case 'e':
   case 'E':
+  case '5':
     convert(1, 0, 0, 0, 1, 0);
     break;
   case 'f':
   case 'F':
+  case '6':
     convert(1, 1, 0, 1, 0, 0);
     break;
   case 'g':
   case 'G':
+  case '7':
     convert(1, 1, 0, 1, 1, 0);
     break;
   case 'h':
   case 'H':
+  case '8':
     convert(1, 1, 0, 0, 1, 0);
     break;
   case 'i':
   case 'I':
+  case '9':
     convert(0, 1, 0, 1, 0, 0);
     break;
   case 'j':
   case 'J':
+  case '0':
     convert(0, 1, 0, 1, 1, 0);
     break;
   case 'k':
