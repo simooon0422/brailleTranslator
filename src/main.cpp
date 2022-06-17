@@ -17,6 +17,7 @@ int brailleDots[] = {0, 0, 0, 0, 0, 0};                // Braille representation
 int servPositions[] = {90, 90, 90, 90, 90, 90};        // Stores servos' desired positions
 int servInitPositions[] = {90, 90, 90, 90, 90, 90};    // Stores servos' initial positions
 int servMovePositions[] = {105, 105, 105, 75, 75, 75}; // Stores max positions that servos will move to
+int servCurrentPositions[] = {90, 90, 90, 90, 90, 90}; // Stores servos' current positions
 
 // int captureLetter();                                    //Stores letter for conversion to Braille
 void updateScreen();                                    // Updates LCD screen to show current letter
@@ -72,7 +73,7 @@ void loop()
   }
 
   updateServos();
-  delay(1);
+  delay(10);
 
   // if (message == "90")
   // {
@@ -173,9 +174,29 @@ int degreesToPulse(int degrees)
     return 0;
 }
 
+// void writePosition(int channel, int newPosition)
+// {
+//   pwm.setPWM(channel, 0, degreesToPulse(newPosition));
+// }
+
 void writePosition(int channel, int newPosition)
 {
-  pwm.setPWM(channel, 0, degreesToPulse(newPosition));
+  if (newPosition > servCurrentPositions[channel])
+  {
+    for (int i = servCurrentPositions[channel]; i < newPosition; i++)
+    {
+      pwm.setPWM(channel, 0, degreesToPulse(i));
+      delay(10);
+    }
+  }
+  else
+  {
+    for (int i = servCurrentPositions[channel]; i > newPosition; i--)
+    {
+      pwm.setPWM(channel, 0, degreesToPulse(i));
+      delay(10);
+    }
+  }
 }
 
 void letterToBraille(char letter)
@@ -297,7 +318,7 @@ void letterToBraille(char letter)
     convert(1, 0, 1, 0, 1, 1);
     break;
 
-  //Special characters
+  // Special characters
   case '!': //Ą
     convert(1, 0, 0, 0, 0, 1);
     break;
@@ -357,11 +378,19 @@ void physicalRepresentation(int letterData[])
   }
 }
 
+// void updateServos()
+// {
+//   for (int i = 0; i < 6; i++)
+//   {
+//     writePosition(i, servPositions[i]);
+//   }
+// }
 void updateServos()
 {
   for (int i = 0; i < 6; i++)
   {
     writePosition(i, servPositions[i]);
+    servCurrentPositions[i] = servPositions[i];
   }
 }
 
