@@ -5,19 +5,23 @@
 #define SERVOMIN 150  // This is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX 550  // This is the 'maximum' pulse length count (out of 4096)
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
+#define BUTTON_MINUS 2
+#define BUTTON_PLUS 3
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(); // Create pwm object
-SoftwareSerial hc06(2, 3);
+SoftwareSerial hc06(4, 5);
 
 String message = "";
 
 int messageLength = 0;
+int currentChar = 0;
 
 int brailleDots[] = {0, 0, 0, 0, 0, 0};                // Braille representation of captured letter
 int servPositions[] = {90, 90, 90, 90, 90, 90};        // Stores servos' desired positions
 int servInitPositions[] = {90, 90, 90, 90, 90, 90};    // Stores servos' initial positions
-int servMovePositions[] = {105, 115, 115, 50, 65, 65}; // Stores max positions that servos will move to
+int servMovePositions[] = {110, 115, 115, 50, 60, 60}; // Stores max positions that servos will move to
 int servCurrentPositions[] = {90, 90, 90, 90, 90, 90}; // Stores servos' current positions
+char messageData[50];
 
 // int captureLetter();                                    //Stores letter for conversion to Braille
 void updateScreen();                                    // Updates LCD screen to show current letter
@@ -27,6 +31,8 @@ void letterToBraille(char letter);                      // Converting chosen let
 void convert(int a, int b, int c, int d, int e, int f); //
 void physicalRepresentation(int letterData[]);          // Fills array with servos' desired positions
 void updateServos();                                    // Updates servos' positions
+void increaseCounter();
+void decreaseCounter();
 
 void setup()
 {
@@ -41,6 +47,11 @@ void setup()
   delay(10);
   updateServos();
   // writePosition(0, 90);
+  pinMode(BUTTON_MINUS, INPUT_PULLUP);
+  pinMode(BUTTON_PLUS, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(BUTTON_MINUS), decreaseCounter, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PLUS), increaseCounter, FALLING);
 }
 
 void loop()
@@ -59,8 +70,14 @@ void loop()
     char messageBuf[messageLength];
     message.toCharArray(messageBuf, messageLength);
 
-    letterToBraille(messageBuf[0]);
-    physicalRepresentation(brailleDots);
+    for (int i = 0; i < (messageLength-1); i++)
+    {
+      messageData[i] = messageBuf[i];
+    }
+    
+
+    // letterToBraille(messageBuf[currentChar]);
+    // physicalRepresentation(brailleDots);
     // Serial.println(brailleDots[0]);
     // Serial.println(brailleDots[1]);
     // Serial.println(brailleDots[2]);
@@ -70,10 +87,14 @@ void loop()
     // Serial.println(messageBuf[0]);
     // Serial.println(messageBuf[10]);
     // delay(100);
+    Serial.println(messageData);
   }
 
+  letterToBraille(messageData[currentChar]);
+  physicalRepresentation(brailleDots);
   updateServos();
   delay(1);
+  
 
   // if (message == "90")
   // {
@@ -402,4 +423,22 @@ void convert(int a, int b, int c, int d, int e, int f)
   brailleDots[3] = d;
   brailleDots[4] = e;
   brailleDots[5] = f;
+}
+
+void increaseCounter()
+{
+  if (currentChar < (messageLength-1))
+    {
+      currentChar = currentChar + 1;
+      Serial.println(currentChar);
+    }
+}
+  
+void decreaseCounter()
+{
+  if (currentChar > 0)
+    {
+      currentChar = currentChar - 1;
+      Serial.println(currentChar);
+    }
 }
