@@ -88,6 +88,7 @@ void loop()
     // Serial.println(messageBuf[10]);
     // delay(100);
     Serial.println(messageData);
+    currentChar = 0;
   }
 
   letterToBraille(messageData[currentChar]);
