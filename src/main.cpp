@@ -16,7 +16,7 @@ int messageLength = 0;
 int brailleDots[] = {0, 0, 0, 0, 0, 0};                // Braille representation of captured letter
 int servPositions[] = {90, 90, 90, 90, 90, 90};        // Stores servos' desired positions
 int servInitPositions[] = {90, 90, 90, 90, 90, 90};    // Stores servos' initial positions
-int servMovePositions[] = {105, 105, 105, 75, 75, 75}; // Stores max positions that servos will move to
+int servMovePositions[] = {105, 115, 115, 50, 65, 65}; // Stores max positions that servos will move to
 int servCurrentPositions[] = {90, 90, 90, 90, 90, 90}; // Stores servos' current positions
 
 // int captureLetter();                                    //Stores letter for conversion to Braille
@@ -73,7 +73,7 @@ void loop()
   }
 
   updateServos();
-  delay(10);
+  delay(1);
 
   // if (message == "90")
   // {
